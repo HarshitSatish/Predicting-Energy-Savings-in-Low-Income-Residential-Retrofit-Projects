@@ -1,0 +1,23 @@
+residential-existing-homes-one-to-four-units-energy-efficiency-projects-for-households-with-income-u-1.csv
+
+Column Name                                                 Type            
+reporting_period                                            date
+project_id                                                  integer
+project_county                                              string
+project_city                                                string
+project_zip                                                 integer
+gas_utility                                                 string
+electric_utility                                            string
+project_completion_date                                     date
+total_project_cost                                          decimal
+pre_retrofit_home_heating_fuel_type                         string
+year_home_built                                             integer
+size_of_home                                                integer
+number_of_units                                             integer
+job_type                                                    string
+type_of_dwelling                                            string
+measure_type                                                string
+estimated_annual_kwh_savings                                decimal
+estimated_annual_mmbtu_savings                              decimal
+first_year_modeled_project_energy_savings_estimate          decimal
+location_1                                                  string
