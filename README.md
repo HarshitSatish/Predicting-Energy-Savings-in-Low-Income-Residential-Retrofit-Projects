@@ -21,12 +21,6 @@ To address this, a **log(x + 1) transformation** was applied to:
 - Normalize the distribution  
 - Improve model performance  
 
-**Before Transformation:**  
-![Before](https://github.com/user-attachments/assets/07800376-c4eb-402c-9106-2ba5d258a46d)
-
-**After Log Transformation:**  
-![After](https://github.com/user-attachments/assets/ba2c72e3-f5f9-49c4-ac0d-52d8812cbe53)
-
 ---
 
 ## Handling Missing Values  
@@ -39,25 +33,52 @@ Missing values were imputed using a **hierarchical mode-based approach**:
 
 ---
 
-### Year Built  
+### Year Built (Updated Approach)  
 
-A flag variable was created to preserve data meaning:
+Missing values in **Year Home Built** were imputed using a **K-Nearest Neighbors (KNN) based approach**.
 
-| Flag | Description |
-|------|------------|
-| 0 | Year present |
-| 1 | Homes built before 1800 |
-| 2 | Missing values |
+#### Methodology  
 
-- Missing values (flag = 2) were filled using the **median year**  
-- `<1800` values were preserved using the flag  
+- Removed non-informative and leakage-prone features (including target variable)  
+- Encoded categorical variables and standardized numerical features  
+- Applied KNN imputation with:
+  - **k = 3 neighbors**
+  - **k = 5 neighbors**  
+
+#### Model Selection  
+
+- Compared both imputed datasets  
+- Selected the dataset with **lower standard deviation**, ensuring minimal distribution distortion  
+
+---
+
+## Insights from KNN Imputation  
+---
+
+- **Improved Data Realism**  
+  KNN preserves local patterns, resulting in more realistic year assignments compared to median-based filling  
+
+- **Reduced Distribution Distortion**  
+  Avoids artificial clustering around central values and maintains a smoother distribution  
+
+- **Better Feature Relationships**  
+  Year Built now aligns better with:
+  - Project Cost  
+  - Size of Home  
+  - Job Type  
+
+- **Handling of Edge Cases**  
+  Extreme values (older homes) are better preserved instead of being over-smoothed  
+
+- **Trade-off**  
+  Increased computational cost, but significantly improved imputation quality  
 
 ---
 
 ## Data Standardization for House Size  
 ---
 
-A similar flag-based approach was applied:
+A flag-based approach was applied:
 
 | Flag | Description |
 |------|------------|
@@ -67,7 +88,7 @@ A similar flag-based approach was applied:
 | 3 | < 4000 sq ft |
 | 4 | > 4000 sq ft |
 
-This preserves **boundary-based information** while enabling numeric modeling.
+This preserves boundary-based information while enabling numeric modeling.
 
 ---
 
@@ -95,7 +116,7 @@ Extracted features:
 - Latitude  
 - Longitude  
 
-These features help capture **regional variations in energy consumption and savings**.
+These features help capture regional variations in energy consumption and savings.
 
 ---
 
@@ -116,4 +137,4 @@ The following columns were removed as duplicates:
 The preprocessed dataset was saved as:
 
 ```python
-df = pd.read_csv("Preprocessed_dataset.csv")
+df = pd.read_csv("Preprocessed_dataset_knn(5neighbour).csv")
