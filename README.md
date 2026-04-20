@@ -1,140 +1,110 @@
-# Predicting Energy Savings in Low-Income Residential Retrofit Projects  
-### A comparative analysis of OLS, ensemble techniques, and Neural Networks on regression tasks  
+PREDICTING ENERGY SAVINGS IN LOW-INCOME RESIDENTIAL RETROFIT PROJECTS A
+COMPARATIVE ANALYSIS OF OLS, ENSEMBLE TECHNIQUES, AND NEURAL NETWORKS
 
----
+------------------------------------------------------------------------
 
-## Preprocessing Step  
----
+PROJECT OVERVIEW
 
-**Number of records:** 51,934  
-**Number of features:** 20  
+This project predicts annual energy savings (in $) for low-income
+residential retrofit programs using machine learning models. Accurate
+prediction helps optimize funding allocation and improve energy
+efficiency strategies.
 
----
+------------------------------------------------------------------------
 
-## Target Variable Transformation  
----
+OBJECTIVE
 
-The target variable was **left-skewed**, violating the normality assumption required for linear regression.  
+-   Predict First Year Modeled Project Energy Savings ($)
+-   Compare OLS, Ridge, Lasso, Random Forest, XGBoost, Neural Networks
+-   Perform preprocessing, feature engineering, encoding, and scaling
+-   Optimize models using hyperparameter tuning
+-   Evaluate using RMSE and R²
 
-To address this, a **log(x + 1) transformation** was applied to:
-- Handle zero values  
-- Normalize the distribution  
-- Improve model performance  
+------------------------------------------------------------------------
 
----
+DATASET
 
-## Handling Missing Values  
----
+Source: NYSERDA Retrofit Program Records: 51,934 Features: 20
 
-### Gas Utility  
+------------------------------------------------------------------------
 
-Missing values were imputed using a **hierarchical mode-based approach**:  
-**Project County → Electric Utility → Mode(Gas Utility)**  
+PREPROCESSING
 
----
+TARGET TRANSFORMATION Applied log(x + 1) transformation to handle
+skewness and stabilize variance.
 
-### Year Built (Updated Approach)  
+MISSING VALUES Gas Utility: Hierarchical imputation (County → Electric
+Utility → Mode)
 
-Missing values in **Year Home Built** were imputed using a **K-Nearest Neighbors (KNN) based approach**.
+Year Home Built: KNN Imputation (k=3, k=5) Selected dataset with lower
+variance to preserve distribution. Target leakage avoided.
 
-#### Methodology  
+------------------------------------------------------------------------
 
-- Removed non-informative and leakage-prone features (including target variable)  
-- Encoded categorical variables and standardized numerical features  
-- Applied KNN imputation with:
-  - **k = 3 neighbors**
-  - **k = 5 neighbors**  
+FEATURE ENGINEERING
 
-#### Model Selection  
+-   Age of Home = Completion Year − Year Built
+-   Cost per Sqft (log transformed)
+-   Energy Savings per Sqft
+-   Temporal features (Year, Month, Day)
+-   Geospatial features (City, State, Zip, Latitude, Longitude)
 
-- Compared both imputed datasets  
-- Selected the dataset with **lower standard deviation**, ensuring minimal distribution distortion  
+------------------------------------------------------------------------
 
----
+ENCODING
 
-## Insights from KNN Imputation  
----
+-   Frequency Encoding: County, City
+-   One-Hot Encoding: Job Type, Dwelling, Measure Type, Fuel Type
 
-- **Improved Data Realism**  
-  KNN preserves local patterns, resulting in more realistic year assignments compared to median-based filling  
+------------------------------------------------------------------------
 
-- **Reduced Distribution Distortion**  
-  Avoids artificial clustering around central values and maintains a smoother distribution  
+SCALING
 
-- **Better Feature Relationships**  
-  Year Built now aligns better with:
-  - Project Cost  
-  - Size of Home  
-  - Job Type  
+-   StandardScaler applied
 
-- **Handling of Edge Cases**  
-  Extreme values (older homes) are better preserved instead of being over-smoothed  
+------------------------------------------------------------------------
 
-- **Trade-off**  
-  Increased computational cost, but significantly improved imputation quality  
+MODELS
 
----
+-   OLS, Linear Regression
+-   Ridge, Lasso
+-   Decision Tree, Random Forest, XGBoost
+-   Neural Networks
 
-## Data Standardization for House Size  
----
+------------------------------------------------------------------------
 
-A flag-based approach was applied:
+HYPERPARAMETER TUNING
 
-| Flag | Description |
-|------|------------|
-| 0 | Exact value present |
-| 1 | < 800 sq ft |
-| 2 | > 800 sq ft |
-| 3 | < 4000 sq ft |
-| 4 | > 4000 sq ft |
+GridSearchCV improved R² from 84.8% to 85.8%
 
-This preserves boundary-based information while enabling numeric modeling.
+------------------------------------------------------------------------
 
----
+EVALUATION
 
-## Data Type Conversion  
----
+Metrics: - RMSE - R²
 
-The following columns were converted:
+Visualizations: - Actual vs Predicted - RMSE comparison - Residual plots
 
-- `Reporting Period` → datetime  
-- `Project Completion Date` → datetime  
-- `Size Of Home` → numeric  
-- `Estimated Annual MMBtu Savings` → numeric  
-- `Estimated Annual kWh Savings` → numeric  
+------------------------------------------------------------------------
 
----
+INSIGHTS
 
-## Feature Engineering (Geospatial Data)  
----
+-   Feature engineering improved performance
+-   Tree models captured non-linearity
+-   Cost per sqft and home size are key drivers
 
-Extracted features:
+------------------------------------------------------------------------
 
-- City  
-- State  
-- Zipcode  
-- Latitude  
-- Longitude  
+CONCLUSION
 
-These features help capture regional variations in energy consumption and savings.
+This project demonstrates the effectiveness of combining statistical and
+machine learning models for predicting energy savings.
 
----
+------------------------------------------------------------------------
 
-## Removing Redundant Features  
----
+AUTHOR
 
-The following columns were removed as duplicates:
+Harshit Satishkumar, MS Data Science, Northeastern University
+Harshith Vasantha Rajkumar, MS Data Science, Northeastern University
+Pratham Paras Patel, MS Data Science, Northeastern University
 
-- `Location_1_city`  
-- `Location_1_state`  
-- `Location_1_zipcode`  
-
----
-
-## Final Dataset  
----
-
-The preprocessed dataset was saved as:
-
-```python
-df = pd.read_csv("Preprocessed_dataset_knn(5neighbour).csv")
